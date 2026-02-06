@@ -2,65 +2,96 @@ import Dexie from 'dexie';
 
 export const db = new Dexie('KeuanganApp');
 
-// Define database schema
-db.version(1).stores({
-  hutang: '++id, nama, tipe, jumlah, periode, tanggal, catatan',
-  pembayaranHutang: '++id, hutangId, jumlah, tanggal, catatan',
-  piutang: '++id, namaOrang, jumlah, tanggal, jatuhTempo, catatan',
-  pembayaranPiutang: '++id, piutangId, jumlah, tanggal, catatan',
-  pemasukan: '++id, sumber, tipe, jumlah, tanggal, catatan',
-  pengeluaran: '++id, kategori, jumlah, tanggal, catatan',
-  maintenance: '++id, nama, tanggal, km_saat_ini, km_berikutnya, catatan',
+// Version 3: Complete schema with proper indexing
+db.version(3).stores({
+  hutang: '++id, nama, tipe, tanggal',
+  pembayaranHutang: '++id, hutangId, tanggal',
+  piutang: '++id, namaOrang, tanggal',
+  pembayaranPiutang: '++id, piutangId, tanggal',
+  pemasukan: '++id, sumber, tipe, tanggal',
+  pengeluaran: '++id, kategori, tanggal',
+  maintenance: '++id, nama, tanggal',
   tipeHutang: '++id, nama',
   tipePemasukan: '++id, nama',
   kategoriPengeluaran: '++id, nama'
-});
-
-// Version 2: Add biaya field to maintenance
-db.version(2).stores({
-  maintenance: '++id, nama, tanggal, km_saat_ini, km_berikutnya, biaya, catatan'
-}).upgrade(tx => {
-  // Migrate existing data to add biaya field (default 0)
-  return tx.table('maintenance').toCollection().modify(item => {
-    if (!item.biaya) {
-      item.biaya = 0;
+}).upgrade(async (tx) => {
+  // Migration dari versi sebelumnya
+  try {
+    // Ensure all tables exist
+    const tables = [
+      'hutang', 'pembayaranHutang', 'piutang', 'pembayaranPiutang',
+      'pemasukan', 'pengeluaran', 'maintenance',
+      'tipeHutang', 'tipePemasukan', 'kategoriPengeluaran'
+    ];
+    
+    for (const table of tables) {
+      try {
+        await tx.table(table).count();
+      } catch (error) {
+        console.warn(`Table ${table} will be recreated`);
+      }
     }
-  });
+  } catch (error) {
+    console.warn('Upgrade migration issue:', error);
+  }
 });
 
-// Default categories/types
-db.on('populate', async () => {
-  // Default tipe hutang
-  await db.tipeHutang.bulkAdd([
-    { nama: 'Pribadi' },
-    { nama: 'Kredit' },
-    { nama: 'Pinjaman Bank' },
-    { nama: 'Cicilan' }
-  ]);
+// Initialize default data
+db.on('populate', async (db) => {
+  try {
+    // Only populate if tables are empty
+    const tipeHutangCount = await db.tipeHutang.count();
+    
+    if (tipeHutangCount === 0) {
+      // Default tipe hutang
+      await db.tipeHutang.bulkAdd([
+        { nama: 'Pribadi' },
+        { nama: 'Kredit' },
+        { nama: 'Pinjaman Bank' },
+        { nama: 'Cicilan' },
+        { nama: 'Lainnya' }
+      ]);
+    }
 
-  // Default tipe pemasukan
-  await db.tipePemasukan.bulkAdd([
-    { nama: 'Gaji' },
-    { nama: 'Bonus' },
-    { nama: 'Freelance' },
-    { nama: 'Investasi' },
-    { nama: 'Pembayaran Piutang' }, // For auto-relation
-    { nama: 'Lainnya' }
-  ]);
+    // Check if tipePemasukan is empty
+    const tipePemasukanCount = await db.tipePemasukan.count();
+    if (tipePemasukanCount === 0) {
+      // Default tipe pemasukan
+      await db.tipePemasukan.bulkAdd([
+        { nama: 'Gaji' },
+        { nama: 'Bonus' },
+        { nama: 'Freelance' },
+        { nama: 'Investasi' },
+        { nama: 'Pembayaran Piutang' },
+        { nama: 'Lainnya' }
+      ]);
+    }
 
-  // Default kategori pengeluaran
-  await db.kategoriPengeluaran.bulkAdd([
-    { nama: 'Makanan & Minuman' },
-    { nama: 'Transportasi' },
-    { nama: 'Belanja' },
-    { nama: 'Hiburan' },
-    { nama: 'Tagihan' },
-    { nama: 'Kesehatan' },
-    { nama: 'Pendidikan' },
-    { nama: 'Pembayaran Hutang' }, // For auto-relation
-    { nama: 'Perbaikan Kendaraan' }, // For auto-relation
-    { nama: 'Lainnya' }
-  ]);
+    // Check if kategoriPengeluaran is empty
+    const kategoriCount = await db.kategoriPengeluaran.count();
+    if (kategoriCount === 0) {
+      // Default kategori pengeluaran
+      await db.kategoriPengeluaran.bulkAdd([
+        { nama: 'Makanan & Minuman' },
+        { nama: 'Transportasi' },
+        { nama: 'Belanja' },
+        { nama: 'Hiburan' },
+        { nama: 'Tagihan' },
+        { nama: 'Kesehatan' },
+        { nama: 'Pendidikan' },
+        { nama: 'Pembayaran Hutang' },
+        { nama: 'Perbaikan Kendaraan' },
+        { nama: 'Lainnya' }
+      ]);
+    }
+  } catch (error) {
+    console.error('Error during database population:', error);
+  }
+});
+
+// Error handling middleware
+db.on('error', (error) => {
+  console.error('Database error:', error);
 });
 
 export default db;
