@@ -3,6 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import db from '../../db/database';
 import { formatDate, formatNumber, getCurrentDate, formatInputNumber, getPlainNumber, formatCurrency } from '../../utils/formatters';
 import { Plus, Edit2, Trash2, X, AlertCircle } from 'lucide-react';
+import NumericInput from '../common/NumericInput';
 
 const Maintenance = () => {
   const [showForm, setShowForm] = useState(false);
@@ -296,12 +297,10 @@ const Maintenance = () => {
               </div>
 
               <div>
-                <label className="label">Biaya Perbaikan (Rp) - Opsional</label>
-                <input
-                  type="text"
+                <NumericInput
+                  label="Biaya Perbaikan (Rp) - Opsional"
                   value={formData.biaya}
-                  onChange={(e) => setFormData({ ...formData, biaya: formatInputNumber(e.target.value) })}
-                  className="input-field"
+                  onChange={(e) => setFormData({ ...formData, biaya: e.target.value })}
                   placeholder="0"
                 />
                 <p className="text-xs text-gray-400 mt-1">

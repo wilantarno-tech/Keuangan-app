@@ -3,6 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import db from '../../db/database';
 import { formatCurrency, formatDate, getCurrentDate, formatInputNumber, getPlainNumber } from '../../utils/formatters';
 import { Plus, Edit2, Trash2, X, DollarSign, History, UserPlus, Clock } from 'lucide-react';
+import NumericInput from '../common/NumericInput';
 
 const Piutang = () => {
   const [showForm, setShowForm] = useState(false);
@@ -349,12 +350,10 @@ const Piutang = () => {
               </div>
 
               <div>
-                <label className="label">Jumlah Piutang (Rp)</label>
-                <input
-                  type="text"
+                <NumericInput
+                  label="Jumlah Piutang (Rp)"
                   value={formData.jumlah}
-                  onChange={(e) => setFormData({ ...formData, jumlah: formatInputNumber(e.target.value) })}
-                  className="input-field"
+                  onChange={(e) => setFormData({ ...formData, jumlah: e.target.value })}
                   required
                   placeholder="0"
                 />
@@ -444,12 +443,10 @@ const Piutang = () => {
 
             <form onSubmit={handlePayment} className="space-y-4">
               <div>
-                <label className="label">Jumlah Diterima (Rp)</label>
-                <input
-                  type="text"
+                <NumericInput
+                  label="Jumlah Diterima (Rp)"
                   value={paymentData.jumlah}
-                  onChange={(e) => setPaymentData({ ...paymentData, jumlah: formatInputNumber(e.target.value) })}
-                  className="input-field"
+                  onChange={(e) => setPaymentData({ ...paymentData, jumlah: e.target.value })}
                   required
                   placeholder="0"
                 />

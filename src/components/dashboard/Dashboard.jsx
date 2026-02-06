@@ -25,11 +25,12 @@ const Dashboard = () => {
   const totalPemasukan = pemasukan.reduce((sum, item) => sum + item.jumlah, 0);
   const totalPengeluaran = pengeluaran.reduce((sum, item) => sum + item.jumlah, 0);
 
-  // Get recent items (last 2)
-  const recentHutang = [...hutang].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, 2);
-  const recentPemasukan = [...pemasukan].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, 2);
-  const recentPengeluaran = [...pengeluaran].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, 2);
-  const recentMaintenance = [...maintenance].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, 2);
+  // Get recent items (fixed to 2 items only)
+  const RECENT_ITEMS_LIMIT = 2;
+  const recentHutang = [...hutang].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, RECENT_ITEMS_LIMIT);
+  const recentPemasukan = [...pemasukan].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, RECENT_ITEMS_LIMIT);
+  const recentPengeluaran = [...pengeluaran].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, RECENT_ITEMS_LIMIT);
+  const recentMaintenance = [...maintenance].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, RECENT_ITEMS_LIMIT);
 
   const summaryCards = [
     {
@@ -126,7 +127,7 @@ const Dashboard = () => {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <DollarSign className="text-red-500" size={20} />
-            <h3 className="font-semibold">Hutang Terbaru</h3>
+            <h3 className="font-semibold">Hutang Terbaru (2 Data)</h3>
           </div>
           {recentHutang.length > 0 ? (
             <div className="space-y-3">
@@ -153,7 +154,7 @@ const Dashboard = () => {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="text-green-500" size={20} />
-            <h3 className="font-semibold">Pemasukan Terbaru</h3>
+            <h3 className="font-semibold">Pemasukan Terbaru (2 Data)</h3>
           </div>
           {recentPemasukan.length > 0 ? (
             <div className="space-y-3">
@@ -180,7 +181,7 @@ const Dashboard = () => {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <TrendingDown className="text-orange-500" size={20} />
-            <h3 className="font-semibold">Pengeluaran Terbaru</h3>
+            <h3 className="font-semibold">Pengeluaran Terbaru (2 Data)</h3>
           </div>
           {recentPengeluaran.length > 0 ? (
             <div className="space-y-3">
@@ -207,7 +208,7 @@ const Dashboard = () => {
         <div className="card">
           <div className="flex items-center gap-2 mb-4">
             <Wrench className="text-blue-500" size={20} />
-            <h3 className="font-semibold">Perbaikan Terbaru</h3>
+            <h3 className="font-semibold">Perbaikan Terbaru (2 Data)</h3>
           </div>
           {recentMaintenance.length > 0 ? (
             <div className="space-y-3">

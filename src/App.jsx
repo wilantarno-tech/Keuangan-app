@@ -132,7 +132,11 @@ function App() {
         </main>
 
         {/* Bottom Navigation for Mobile */}
-        <BottomNav currentPage={currentPage} onNavigate={setCurrentPage} />
+        <BottomNav
+          currentPage={currentPage}
+          onNavigate={setCurrentPage}
+          onHistory={() => setShowHistory(true)}
+        />
       </div>
 
       {/* Import/Export Modal */}
