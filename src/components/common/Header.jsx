@@ -1,22 +1,52 @@
 import { Download, Upload } from 'lucide-react';
+import { useState } from 'react';
 
 const Header = ({ title, onExport }) => {
+  const [showMenu, setShowMenu] = useState(false);
+
   return (
-    <header className="bg-dark-card border-b border-dark-border p-4 flex items-center justify-between sticky top-0 z-40">
+    <header className="md:hidden bg-dark-card border-b border-dark-border p-4 flex items-center justify-between sticky top-0 z-40">
+      {/* Logo & Title */}
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center p-1">
-          <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
-        </div>
+        <img src="/logo.png" alt="Logo" className="w-8 h-8" />
         <h1 className="text-lg font-bold">{title}</h1>
       </div>
-      <button
-        onClick={onExport}
-        className="md:hidden flex items-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm"
-      >
-        <Download size={16} />
-        <Upload size={16} className="-ml-1" />
-        <span>Kelola Data</span>
-      </button>
+      
+      {/* Mobile Export/Import Button */}
+      <div className="relative">
+        <button
+          onClick={() => setShowMenu(!showMenu)}
+          className="flex items-center gap-2 px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm"
+        >
+          <Download size={16} />
+          <span>Data</span>
+        </button>
+
+        {showMenu && (
+          <>
+            <div 
+              className="fixed inset-0 z-10"
+              onClick={() => setShowMenu(false)}
+            />
+            
+            <div className="absolute right-0 top-12 bg-dark-card border border-dark-border rounded-lg shadow-lg py-2 w-48 z-20">
+              <button
+                onClick={() => {
+                  onExport();
+                  setShowMenu(false);
+                }}
+                className="w-full px-4 py-3 hover:bg-gray-700 text-left flex items-center gap-3"
+              >
+                <Download size={18} className="text-green-400" />
+                <div>
+                  <div className="font-medium">Kelola Data</div>
+                  <div className="text-xs text-gray-400">Export/Import</div>
+                </div>
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </header>
   );
 };

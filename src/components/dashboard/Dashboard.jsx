@@ -25,11 +25,11 @@ const Dashboard = () => {
   const totalPemasukan = pemasukan.reduce((sum, item) => sum + item.jumlah, 0);
   const totalPengeluaran = pengeluaran.reduce((sum, item) => sum + item.jumlah, 0);
 
-  // Get recent items (last 2)
-  const recentHutang = [...hutang].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, 2);
-  const recentPemasukan = [...pemasukan].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, 2);
-  const recentPengeluaran = [...pengeluaran].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, 2);
-  const recentMaintenance = [...maintenance].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, 2);
+  // Get recent items (last 3)
+  const recentHutang = [...hutang].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, 3);
+  const recentPemasukan = [...pemasukan].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, 3);
+  const recentPengeluaran = [...pengeluaran].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, 3);
+  const recentMaintenance = [...maintenance].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, 3);
 
   const summaryCards = [
     {
