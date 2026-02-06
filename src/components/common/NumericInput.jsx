@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Calculator, X } from 'lucide-react';
-import { formatInputNumber, getPlainNumber } from '../utils/formatters';
+import { formatInputNumber, getPlainNumber } from '../../utils/formatters';
 
 const NumericInput = ({ value, onChange, placeholder = "0", label, required = false, className = "" }) => {
   const [showCalculator, setShowCalculator] = useState(false);
@@ -36,6 +36,8 @@ const NumericInput = ({ value, onChange, placeholder = "0", label, required = fa
         case '/':
           result = prevValue / current;
           break;
+        default:
+          result = 0;
       }
       
       setCalcDisplay(result.toString());
