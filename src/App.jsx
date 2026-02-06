@@ -15,10 +15,12 @@ import Piutang from './components/piutang/Piutang';
 import Pemasukan from './components/pemasukan/Pemasukan';
 import Pengeluaran from './components/pengeluaran/Pengeluaran';
 import Maintenance from './components/maintenance/Maintenance';
+import History from './components/history/History';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [showExportModal, setShowExportModal] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Fetch all data for export
@@ -111,6 +113,7 @@ function App() {
         currentPage={currentPage}
         onNavigate={setCurrentPage}
         onExport={() => setShowExportModal(true)}
+        onHistory={() => setShowHistory(true)}
         isCollapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
@@ -140,6 +143,26 @@ function App() {
         onExportExcel={handleExportExcel}
         onImport={handleImport}
       />
+
+      {/* History Modal */}
+      {showHistory && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-start justify-center overflow-y-auto p-4">
+          <div className="bg-dark-card rounded-lg w-full max-w-6xl my-8">
+            <div className="sticky top-0 bg-dark-card border-b border-dark-border p-4 flex items-center justify-between rounded-t-lg z-10">
+              <h2 className="text-xl font-bold">📜 History</h2>
+              <button
+                onClick={() => setShowHistory(false)}
+                className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-6">
+              <History />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
